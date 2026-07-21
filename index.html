@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#2563eb">
-  <title>Kokurikuler SMAN 15 Maluku Tengah – Bangun Pagi & Tidur Cepat</title>
+  <meta name="theme-color" content="#1d4ed8">
+  <title>Kokurikuler SMAN 15 Maluku Tengah – Disiplin Bangun & Tidur</title>
 
-  <!-- PWA Manifest Valid Data URI (Bebas Error Console) -->
-  <link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Kokurikuler%20SMAN%2015%22%2C%22short_name%22%3A%22Disiplin15%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%7D">
+  <!-- PWA Manifest Inline -->
+  <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Disiplin15%20SMAN%2015%22%2C%22short_name%22%3A%22Disiplin15%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%231d4ed8%22%2C%22theme_color%22%3A%22%231d4ed8%22%7D">
   <link rel="apple-touch-icon" href="https://img.icons8.com/color/192/alarm-clock.png">
 
-  <!-- External CDN Libraries -->
+  <!-- Font & External Libraries -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -19,70 +19,61 @@
 
   <style>
     :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --primary-light: #dbeafe;
-      --accent-night: linear-gradient(135deg, #1e1b4b, #312e81, #4338ca);
-      --accent-morning: linear-gradient(135deg, #d97706, #f59e0b, #fbbf24);
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --bg: #f8fafc;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --card-bg: rgba(255, 255, 255, 0.88);
-      --border: rgba(226, 232, 240, 0.9);
-      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-      --radius: 20px;
+      --md-primary: #1d4ed8;
+      --md-primary-container: #dbeafe;
+      --md-secondary: #10b981;
+      --md-accent: #f59e0b;
+      --md-danger: #ef4444;
+      --md-bg: #f8fafc;
+      --md-surface: rgba(255, 255, 255, 0.88);
+      --md-text: #0f172a;
+      --md-text-muted: #64748b;
+      --md-border: rgba(226, 232, 240, 0.9);
+      --md-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.08);
+      --md-radius: 24px;
     }
 
     body.dark-mode {
-      --bg: #0f172a;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --card-bg: rgba(30, 41, 59, 0.88);
-      --border: rgba(51, 65, 85, 0.9);
-      --primary-light: rgba(37, 99, 235, 0.2);
-      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      --md-bg: #0f172a;
+      --md-surface: rgba(30, 41, 59, 0.9);
+      --md-text: #f8fafc;
+      --md-text-muted: #94a3b8;
+      --md-border: rgba(51, 65, 85, 0.9);
+      --md-primary-container: rgba(37, 99, 235, 0.2);
+      --md-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.4);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
     body {
-      background-color: var(--bg);
-      color: var(--text);
+      background-color: var(--md-bg);
+      color: var(--md-text);
       display: flex;
       justify-content: center;
       min-height: 100vh;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      transition: background-color 0.3s, color 0.3s;
     }
 
-    .app-container {
+    .app-viewport {
       width: 100%;
       max-width: 480px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       position: relative;
-      padding-bottom: 75px;
-      background: var(--bg);
-      box-shadow: 0 0 40px rgba(0,0,0,0.08);
+      padding-bottom: 80px;
+      background: var(--md-bg);
+      box-shadow: 0 0 50px rgba(0,0,0,0.1);
     }
 
     .glassmorphism {
-      background: var(--card-bg);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--border);
+      background: var(--md-surface);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--md-border);
     }
 
-    .app-header {
+    .app-bar {
       padding: 16px 20px;
       display: flex;
       justify-content: space-between;
@@ -92,484 +83,453 @@
       z-index: 100;
       border-bottom-left-radius: 20px;
       border-bottom-right-radius: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .brand-group { display: flex; align-items: center; gap: 12px; }
+    .brand-icon { font-size: 1.8rem; }
+    .brand-title { font-size: 0.88rem; font-weight: 800; color: var(--md-primary); letter-spacing: 0.3px; }
+    .brand-sub { font-size: 0.7rem; color: var(--md-text-muted); font-weight: 600; }
 
-    .brand-logo { font-size: 1.8rem; line-height: 1; }
-    .brand-title { font-size: 0.85rem; font-weight: 800; color: var(--primary); letter-spacing: 0.3px; }
-    .brand-subtitle { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
-
-    .icon-btn {
+    .action-btn {
       background: rgba(148, 163, 184, 0.15);
       border: none;
-      width: 38px;
-      height: 38px;
+      width: 38px; height: 38px;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      cursor: pointer;
-      color: var(--text);
-      transition: transform 0.2s;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; cursor: pointer; color: var(--md-text);
     }
 
-    .icon-btn:active { transform: scale(0.92); }
-
-    .motivation-banner {
+    .greeting-card {
       margin: 14px 16px 6px;
-      padding: 12px 16px;
-      background: linear-gradient(135deg, #3b82f615, #60a5fa25);
-      border-left: 4px solid var(--primary);
-      border-radius: 12px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(16, 185, 129, 0.1));
+      border-left: 5px solid var(--md-primary);
+      border-radius: 16px;
       font-size: 0.82rem;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      font-weight: 600;
-      color: var(--text);
-      box-shadow: var(--shadow);
+      font-weight: 700;
     }
 
-    .main-content { padding: 16px; flex: 1; }
-    .page-view { display: none; }
-    .page-view.active { display: block; animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+    .quote-box {
+      font-size: 0.72rem;
+      color: var(--md-text-muted);
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    .content-area { padding: 16px; flex: 1; }
+    .page { display: none; }
+    .page.active { display: block; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
     .card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
+      background: var(--md-surface);
+      border-radius: var(--md-radius);
       padding: 20px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
+      border: 1px solid var(--md-border);
+      box-shadow: var(--md-shadow);
       margin-bottom: 16px;
     }
 
     .card-title {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 12px;
+      font-size: 0.98rem;
+      font-weight: 800;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .tab-switcher {
-      display: flex;
-      background: rgba(148, 163, 184, 0.15);
-      border-radius: 14px;
-      padding: 4px;
-      margin-bottom: 20px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 10px;
-      background: transparent;
-      font-weight: 700;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .tab-btn.active {
-      background: var(--card-bg);
-      color: var(--primary);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    }
-
-    .form-group { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
-    .form-row { display: flex; gap: 10px; }
-    .form-row .form-group { flex: 1; }
-    .form-group label { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); }
-    .form-group input, .form-group select {
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.5);
-      color: var(--text);
-      font-size: 0.9rem;
-      outline: none;
-      transition: border 0.2s;
-    }
-
-    body.dark-mode .form-group input, 
-    body.dark-mode .form-group select { background: rgba(15, 23, 42, 0.6); }
-
-    .form-group input:focus, .form-group select:focus { border-color: var(--primary); }
-
-    .btn {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 14px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
+    /* PROFILE & LEVEL STYLES */
+    .profile-hero {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: transform 0.15s ease;
-    }
-
-    .btn:active { transform: scale(0.98); }
-    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35); }
-    .btn-secondary { background: #475569; color: white; }
-    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
-    .btn-sm { padding: 8px 12px; font-size: 0.78rem; border-radius: 10px; width: auto; }
-
-    .profile-summary-card {
-      padding: 18px;
-      border-radius: var(--radius);
+      gap: 16px;
       margin-bottom: 16px;
-      background: linear-gradient(135deg, var(--primary-light), rgba(255,255,255,0.05));
     }
 
-    .profile-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
-    .avatar-ring {
-      width: 58px; height: 58px; border-radius: 50%;
-      background: linear-gradient(135deg, #2563eb, #60a5fa);
+    .avatar-wrapper { position: relative; }
+    .avatar-img {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #10b981);
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.8rem; color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+      font-size: 2rem; color: white; box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+      object-fit: cover;
     }
 
-    .profile-name { font-size: 1.05rem; font-weight: 800; }
-    .profile-meta { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
+    .badge-icon-overlay {
+      position: absolute; bottom: -4px; right: -4px;
+      background: var(--md-surface); border: 2px solid var(--md-border);
+      border-radius: 50%; width: 26px; height: 26px;
+      display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
+    }
+
+    .profile-info h2 { font-size: 1.1rem; font-weight: 800; }
+    .profile-info p { font-size: 0.75rem; color: var(--md-text-muted); font-weight: 600; margin-top: 2px; }
+
+    .level-progress-bar {
+      width: 100%; height: 10px; background: rgba(148, 163, 184, 0.2);
+      border-radius: 10px; overflow: hidden; margin: 8px 0 4px;
+    }
+
+    .level-progress-fill {
+      height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981);
+      width: 65%; border-radius: 10px; transition: width 0.5s ease;
+    }
 
     .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .stat-box {
-      background: rgba(255, 255, 255, 0.4); padding: 10px 12px;
-      border-radius: 14px; display: flex; flex-direction: column; border: 1px solid var(--border);
+    .stat-card {
+      background: rgba(255,255,255,0.05); padding: 12px;
+      border-radius: 16px; border: 1px solid var(--md-border);
     }
-    body.dark-mode .stat-box { background: rgba(15, 23, 42, 0.4); }
+    .stat-label { font-size: 0.68rem; color: var(--md-text-muted); font-weight: 700; text-transform: uppercase; }
+    .stat-value { font-size: 1.05rem; font-weight: 800; margin-top: 2px; }
 
-    .stat-label { font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
-    .stat-val { font-size: 0.95rem; font-weight: 800; margin-top: 2px; }
-    .stat-val.highlight { color: var(--primary); }
-    .stat-val.text-success { color: var(--success); }
-
-    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-    .action-card {
-      padding: 18px 14px; border-radius: var(--radius); border: none; color: white;
-      text-align: left; cursor: pointer; box-shadow: var(--shadow); transition: transform 0.2s ease;
+    /* CALENDAR GRID */
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 10px; }
+    .cal-day-head { text-align: center; font-size: 0.68rem; font-weight: 700; color: var(--md-text-muted); }
+    .cal-day {
+      aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center;
+      justify-content: center; font-size: 0.72rem; font-weight: 700; background: rgba(148, 163, 184, 0.1);
     }
-    .action-card:active { transform: scale(0.96); }
-    .action-card.night { background: var(--accent-night); }
-    .action-card.morning { background: var(--accent-morning); }
-    .action-card .icon { font-size: 2.2rem; margin-bottom: 8px; display: block; }
-    .action-card h3 { font-size: 0.9rem; font-weight: 800; }
-    .action-card p { font-size: 0.7rem; opacity: 0.85; margin-top: 4px; font-weight: 600; }
+    .cal-day.green { background: #10b981; color: white; }
+    .cal-day.yellow { background: #f59e0b; color: white; }
+    .cal-day.red { background: #ef4444; color: white; }
 
-    .video-container {
-      width: 100%; height: 280px; background: #000; border-radius: 16px;
-      overflow: hidden; position: relative; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    /* FORM & BUTTONS */
+    .form-group { margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.75rem; font-weight: 700; color: var(--md-text-muted); }
+    .form-group input, .form-group select {
+      padding: 12px 14px; border-radius: 12px; border: 1px solid var(--md-border);
+      background: rgba(255,255,255,0.5); color: var(--md-text); font-size: 0.9rem; outline: none;
     }
-    #webcam { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-    .camera-overlay {
-      position: absolute; top: 10px; left: 10px; background: rgba(0, 0, 0, 0.6);
-      color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;
-      display: flex; align-items: center; gap: 6px;
+    body.dark-mode .form-group input, body.dark-mode .form-group select { background: rgba(15, 23, 42, 0.6); }
+
+    .btn {
+      width: 100%; padding: 14px; border: none; border-radius: 14px;
+      font-weight: 800; font-size: 0.9rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: transform 0.15s ease, opacity 0.2s;
     }
-    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; animation: pulse 1.2s infinite; }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: linear-gradient(135deg, #1d4ed8, #2563eb); color: white; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35); }
+    .btn-secondary { background: #10b981; color: white; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); }
+    .btn-outline { background: transparent; border: 1px solid var(--md-border); color: var(--md-text); }
+    .btn-danger { background: #ef4444; color: white; }
 
-    .mood-selector { display: flex; justify-content: space-between; gap: 8px; margin-top: 6px; }
-    .mood-btn { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--card-bg); font-size: 1.3rem; cursor: pointer; }
-    .mood-btn.active { border-color: var(--primary); background: var(--primary-light); transform: scale(1.1); }
-
-    .gps-badge {
-      background: rgba(16, 185, 129, 0.12); color: var(--success);
-      padding: 8px 12px; border-radius: 10px; font-size: 0.75rem; font-weight: 700;
-      display: flex; align-items: center; gap: 6px; margin-top: 12px;
+    /* CAMERA & ANTI-CURANG */
+    .camera-container {
+      position: relative; width: 100%; height: 290px;
+      background: #000; border-radius: 20px; overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
     }
-
-    .history-list, .leaderboard-list { display: flex; flex-direction: column; gap: 10px; }
-    .history-item, .rank-item {
-      display: flex; align-items: center; gap: 12px; padding: 12px;
-      border-radius: 14px; background: var(--card-bg); border: 1px solid var(--border);
+    #webcamVideo { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+    .watermark-overlay {
+      position: absolute; bottom: 10px; left: 10px; right: 10px;
+      background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(4px);
+      color: white; padding: 8px 12px; border-radius: 12px; font-size: 0.68rem;
     }
-    .history-details { flex: 1; }
-    .history-title { font-size: 0.85rem; font-weight: 700; }
-    .history-meta { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
-    .badge-status { padding: 4px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; }
-    .badge-status.tepat { background: rgba(16, 185, 129, 0.15); color: #059669; }
+    .watermark-overlay strong { color: #60a5fa; }
 
-    .table-container { width: 100%; overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
-    .data-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; text-align: left; }
-    .data-table th, .data-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
-    .data-table th { background: rgba(148, 163, 184, 0.1); font-weight: 700; color: var(--text-muted); }
-    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .mood-grid { display: flex; justify-content: space-between; gap: 8px; margin: 10px 0; }
+    .mood-item {
+      flex: 1; padding: 10px; border-radius: 12px; border: 1px solid var(--md-border);
+      background: var(--md-surface); font-size: 1.4rem; text-align: center; cursor: pointer;
+    }
+    .mood-item.active { border-color: var(--md-primary); background: var(--md-primary-container); transform: scale(1.08); }
 
+    /* TAB SYSTEM */
+    .tab-bar { display: flex; background: rgba(148, 163, 184, 0.15); border-radius: 14px; padding: 4px; margin-bottom: 16px; }
+    .tab-btn { flex: 1; padding: 8px; border: none; border-radius: 10px; background: transparent; font-weight: 700; font-size: 0.78rem; color: var(--md-text-muted); cursor: pointer; }
+    .tab-btn.active { background: var(--md-surface); color: var(--md-primary); box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
+
+    /* LEADERBOARD & LISTS */
+    .list-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+      border-radius: 16px; background: var(--md-surface); border: 1px solid var(--md-border); margin-bottom: 8px;
+    }
+    .rank-num { font-weight: 800; font-size: 1rem; width: 28px; color: var(--md-primary); }
+
+    /* BOTTOM NAVIGATION (6 MENU SISWA) */
     .bottom-nav {
-      position: fixed; bottom: 0; width: 100%; max-width: 480px; height: 65px;
-      display: flex; justify-space-around; align-items: center;
-      border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 99;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+      position: fixed; bottom: 0; width: 100%; max-width: 480px; height: 72px;
+      display: flex; justify-content: space-around; align-items: center;
+      border-top-left-radius: 24px; border-top-right-radius: 24px; z-index: 99;
+      box-shadow: 0 -4px 25px rgba(0,0,0,0.06); padding: 0 6px;
     }
-    .nav-item {
+    .nav-btn {
       background: none; border: none; display: flex; flex-direction: column;
-      align-items: center; gap: 2px; font-size: 0.68rem; color: var(--text-muted);
-      font-weight: 700; cursor: pointer; transition: color 0.2s ease;
+      align-items: center; gap: 3px; font-size: 0.64rem; color: var(--md-text-muted);
+      font-weight: 700; cursor: pointer; width: 16%; transition: color 0.2s, transform 0.2s;
     }
-    .nav-item .icon { font-size: 1.3rem; }
-    .nav-item.active { color: var(--primary); transform: translateY(-2px); }
+    .nav-btn .icon { font-size: 1.35rem; }
+    .nav-btn.active { color: var(--md-primary); transform: translateY(-3px); }
 
-    .modal-overlay {
+    /* MODAL & TOAST */
+    .modal {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 200;
       display: flex; align-items: center; justify-content: center; padding: 20px;
     }
-    .modal-card { width: 100%; max-width: 400px; background: var(--card-bg); border-radius: var(--radius); padding: 20px; }
+    .modal-box { width: 100%; max-width: 400px; background: var(--md-surface); border-radius: var(--md-radius); padding: 20px; }
+    
     .toast {
       position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-      background: #1e293b; color: white; padding: 12px 20px; border-radius: 30px;
-      font-size: 0.82rem; font-weight: 700; box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      background: #0f172a; color: white; padding: 12px 20px; border-radius: 30px;
+      font-size: 0.8rem; font-weight: 700; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
       z-index: 300; display: flex; align-items: center; gap: 8px;
     }
 
     .hidden { display: none !important; }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body class="light-mode">
 
-  <div id="app" class="app-container">
+  <div class="app-viewport">
 
-    <!-- HEADER -->
-    <header class="app-header glassmorphism">
-      <div class="brand">
-        <span class="brand-logo">⏰</span>
+    <!-- APP HEADER -->
+    <header class="app-bar glassmorphism">
+      <div class="brand-group">
+        <span class="brand-icon">⏰</span>
         <div>
           <h1 class="brand-title">SMAN 15 MALUKU TENGAH</h1>
-          <p class="brand-subtitle">Kokurikuler Bangun Pagi & Tidur Cepat</p>
+          <p class="brand-sub">Kokurikuler Bangun Pagi & Tidur Cepat</p>
         </div>
       </div>
-      <div class="header-actions">
-        <button id="themeToggleBtn" class="icon-btn" onclick="toggleTheme()" title="Mode Gelap/Terang">🌙</button>
+      <div style="display:flex; gap:6px;">
+        <button id="installPwaBtn" class="action-btn hidden" title="Install App">📲</button>
+        <button class="action-btn" onclick="toggleDarkMode()" title="Mode Gelap/Terang">🌙</button>
       </div>
     </header>
 
-    <!-- MOTIVATION BANNER -->
-    <div id="quoteBanner" class="motivation-banner">
-      <span class="quote-icon">💡</span>
-      <p id="quoteText">"Hari yang hebat dimulai dengan bangun lebih awal."</p>
+    <!-- AUTO GREETING & MOTIVASI BANNER -->
+    <div id="greetingBanner" class="greeting-card">
+      <div id="autoGreetingText">Selamat datang!</div>
+      <div id="quoteText" class="quote-box">"Kebiasaan kecil hari ini menentukan masa depanmu."</div>
     </div>
 
-    <!-- MAIN VIEW / PAGES -->
-    <main id="mainContent" class="main-content">
+    <!-- MAIN CONTENT PAGES -->
+    <main class="content-area">
 
-      <!-- VIEW 1: LOGIN -->
-      <section id="loginView" class="page-view active">
+      <!-- PAGE 0: LOGIN -->
+      <section id="loginView" class="page active">
         <div class="card glassmorphism">
-          <div class="tab-switcher">
-            <button class="tab-btn active" id="tabSiswaBtn" onclick="switchLoginTab('siswa')">🎓 Siswa</button>
-            <button class="tab-btn" id="tabGuruBtn" onclick="switchLoginTab('guru')">👨‍🏫 Guru Wali</button>
+          <div class="tab-bar">
+            <button class="tab-btn active" id="tabSiswa" onclick="switchLogin('siswa')">🎓 Siswa</button>
+            <button class="tab-btn" id="tabGuru" onclick="switchLogin('guru')">👨‍🏫 Guru Wali</button>
           </div>
 
-          <!-- FORM LOGIN SISWA -->
-          <form id="formLoginSiswa" onsubmit="loginSiswa(event)">
-            <h2 class="card-title">Masuk Presensi Siswa</h2>
+          <!-- LOGIN SISWA FORM -->
+          <form id="formLoginSiswa" onsubmit="handleLoginSiswa(event)">
+            <h2 class="card-title">Login Siswa</h2>
             <div class="form-group">
               <label>Nama Lengkap Siswa</label>
-              <input type="text" id="loginNamaSiswa" placeholder="Contoh: Ahmad Abdullah" required>
+              <input type="text" id="loginNama" placeholder="Contoh: Ahmad Abdullah" required>
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Fase</label>
-                <select id="loginFase" required>
-                  <option value="E">Fase E</option>
-                  <option value="F">Fase F</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Kelas</label>
-                <input type="text" id="loginKelas" placeholder="Misal: X-1" required>
+            <div class="form-group">
+              <label>Fase & Kelas</label>
+              <div style="display:flex; gap:8px;">
+                <select id="loginFase" style="width:40%;"><option value="E">Fase E</option><option value="F">Fase F</option></select>
+                <input type="text" id="loginKelas" placeholder="Kelas (Misal: X-1)" required style="width:60%;">
               </div>
             </div>
-            <button type="submit" class="btn btn-primary margin-top">🚀 Masuk Aplikasi</button>
+            <button type="submit" class="btn btn-primary" style="margin-top:10px;">🚀 Masuk Dashboard Siswa</button>
           </form>
 
-          <!-- FORM LOGIN GURU -->
-          <form id="formLoginGuru" class="hidden" onsubmit="loginGuru(event)">
+          <!-- LOGIN GURU FORM -->
+          <form id="formLoginGuru" class="hidden" onsubmit="handleLoginGuru(event)">
             <h2 class="card-title">Login Guru Wali</h2>
             <div class="form-group">
               <label>Nama Guru Wali</label>
-              <input type="text" id="loginNamaGuru" placeholder="Nama Lengkap dengan Gelar" required>
+              <input type="text" id="loginGuruNama" placeholder="Nama Lengkap & Gelar" required>
             </div>
             <div class="form-group">
-              <label>Password</label>
-              <input type="password" id="loginPassGuru" placeholder="••••••••" required>
+              <label>Kata Sandi</label>
+              <input type="password" id="loginGuruPass" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="btn btn-secondary margin-top">🔒 Masuk Dashboard Guru</button>
+            <button type="submit" class="btn btn-secondary" style="margin-top:10px;">🔒 Masuk Panel Guru</button>
           </form>
         </div>
       </section>
 
-      <!-- VIEW 2: DASHBOARD SISWA -->
-      <section id="dashboardSiswaView" class="page-view">
-        <div class="profile-summary-card glassmorphism">
-          <div class="profile-header">
-            <div class="avatar-ring" id="userAvatar">👦</div>
-            <div>
-              <h2 class="profile-name" id="userNama">Nama Siswa</h2>
-              <p class="profile-meta" id="userInfo">Fase E - Kelas X-1 | Guru Wali: -</p>
+      <!-- PAGE 1: DASHBOARD SISWA -->
+      <section id="dashboardSiswaView" class="page">
+        <!-- PROFILE HERO CARD -->
+        <div class="card glassmorphism">
+          <div class="profile-hero">
+            <div class="avatar-wrapper">
+              <div class="avatar-img" id="dashAvatar">👦</div>
+              <div class="badge-icon-overlay" id="dashBadgeIcon">🥉</div>
+            </div>
+            <div class="profile-info">
+              <h2 id="dashNama">Ahmad Abdullah</h2>
+              <p id="dashMeta">Fase E - Kelas X-1 | Guru Wali: Drs. M. Hatta</p>
             </div>
           </div>
-          <div class="stats-grid">
-            <div class="stat-box">
-              <span class="stat-label">Level Disiplin</span>
-              <span id="userLevel" class="stat-val">🌱 Pemula</span>
+
+          <!-- LEVEL & PROGRESS BAR -->
+          <div style="margin-top:10px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700;">
+              <span id="dashLevelText">🌱 Level: Pemula</span>
+              <span id="dashPoinText">10 Poin</span>
             </div>
-            <div class="stat-box">
-              <span class="stat-label">Badge</span>
-              <span id="userBadge" class="stat-val">🥉 Bronze</span>
+            <div class="level-progress-bar">
+              <div class="level-progress-fill" id="levelProgressFill"></div>
             </div>
-            <div class="stat-box">
-              <span class="stat-label">Total Poin</span>
-              <span id="userPoin" class="stat-val highlight">10</span>
-            </div>
-            <div class="stat-box">
+            <div style="font-size:0.68rem; color:var(--md-text-muted); text-align:right;" id="targetMingguText">Target Minggu Ini: 7x Check-in Tepat Waktu</div>
+          </div>
+
+          <div class="stats-grid" style="margin-top:14px;">
+            <div class="stat-card">
               <span class="stat-label">Kedisiplinan</span>
-              <span id="userDisiplin" class="stat-val text-success">100%</span>
+              <div class="stat-value" id="dashDisiplinVal" style="color:var(--md-secondary);">100%</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Badge Saat Ini</span>
+              <div class="stat-value" id="dashBadgeVal">🥉 Bronze</div>
             </div>
           </div>
         </div>
 
-        <div class="action-grid">
-          <button class="action-card night" onclick="startPresensi('Tidur')">
-            <span class="icon">🌙</span>
-            <h3>Tidur Cepat</h3>
-            <p>Target Maks: <span id="targetTidur">21:30</span> WIT</p>
-          </button>
-          <button class="action-card morning" onclick="startPresensi('Bangun')">
-            <span class="icon">☀️</span>
-            <h3>Bangun Pagi</h3>
-            <p>Target Maks: <span id="targetBangun">05:30</span> WIT</p>
-          </button>
-        </div>
-
-        <!-- PROGRESS CHART -->
+        <!-- KALENDER DISIPLIN -->
         <div class="card">
-          <h3 class="card-title">📊 Grafik Disiplin Minggu Ini</h3>
-          <canvas id="chartSiswa" height="150"></canvas>
-        </div>
-
-        <!-- PENGUMUMAN -->
-        <div class="card">
-          <h3 class="card-title">📢 Pengumuman Sekolah</h3>
-          <div id="pengumumanFeed" style="font-size:0.8rem; color:var(--text-muted);">
-            Belum ada pengumuman terbaru.
+          <h3 class="card-title">📅 Kalender Disiplin Bulan Ini</h3>
+          <div style="display:flex; gap:12px; font-size:0.68rem; font-weight:700; margin-bottom:8px;">
+            <span style="color:#10b981;">🟢 Disiplin</span>
+            <span style="color:#f59e0b;">🟡 Terlambat</span>
+            <span style="color:#ef4444;">🔴 Tidak Hadir</span>
           </div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+
+        <!-- GRAFIK PERKEMBANGAN -->
+        <div class="card">
+          <h3 class="card-title">📈 Grafik Disiplin Mingguan</h3>
+          <canvas id="chartSiswaProgress" height="160"></canvas>
         </div>
       </section>
 
-      <!-- VIEW 3: CAMERA PRESENSI -->
-      <section id="presensiCameraView" class="page-view">
+      <!-- PAGE 2: PROGRAM TIDUR CEPAT -->
+      <section id="tidurCepatView" class="page">
         <div class="card">
-          <h2 class="card-title" id="presensiTitle">Program Presensi</h2>
-          <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:12px;">
-            Sistem Anti-Curang: Ambil foto selfie langsung dari kamera. Watermark otomatis waktu WIT & GPS akan tertera.
+          <h2 class="card-title">🌙 Program Tidur Cepat</h2>
+          <p style="font-size:0.75rem; color:var(--md-text-muted); margin-bottom:12px;">
+            Batas Maksimal Tidur: <strong id="cfgJamTidur">21:30 WIT</strong>
           </p>
 
-          <div class="video-container">
-            <video id="webcam" autoplay playsinline></video>
-            <div class="camera-overlay">
-              <span class="live-dot"></span> KAMERA LANGSUNG
+          <!-- ANTI-CURANG CAMERA PREVIEW -->
+          <div class="camera-container">
+            <video id="webcamVideo" autoplay playsinline></video>
+            <div class="watermark-overlay" id="watermarkPreview">
+              <strong id="wmNama">Nama Siswa</strong> | <span id="wmKelas">Kelas</span><br>
+              <span id="wmWaktu">Waktu WIT Server: --:--:--</span> | GPS: Live
             </div>
           </div>
 
-          <div class="form-group" style="margin-top:14px;">
-            <label>Bagaimana Mood Kamu Hari Ini?</label>
-            <div class="mood-selector">
-              <button type="button" class="mood-btn active" onclick="selectMood(this, '😊')">😊</button>
-              <button type="button" class="mood-btn" onclick="selectMood(this, '🔥')">🔥</button>
-              <button type="button" class="mood-btn" onclick="selectMood(this, '😴')">😴</button>
-              <button type="button" class="mood-btn" onclick="selectMood(this, '💪')">💪</button>
+          <div class="form-group" style="margin-top:12px;">
+            <label>Pilih Mood Kamu Sebelum Tidur:</label>
+            <div class="mood-grid">
+              <div class="mood-item active" onclick="setMood(this, '😊')">😊</div>
+              <div class="mood-item" onclick="setMood(this, '😴')">😴</div>
+              <div class="mood-item" onclick="setMood(this, '😌')">😌</div>
+              <div class="mood-item" onclick="setMood(this, '✨')">✨</div>
             </div>
           </div>
 
-          <div class="gps-badge" id="gpsStatus">📍 GPS: Mengambil Lokasi...</div>
-
-          <button id="btnSubmitPresensi" class="btn btn-primary" style="margin-top:14px;" onclick="captureAndSubmit()">
-            📸 Saya Siap Submit Presensi
+          <button class="btn btn-primary" onclick="processCheckin('Tidur')" style="margin-top:10px;">
+            🌙 Saya Siap Tidur
           </button>
-          <button class="btn btn-outline" style="margin-top:8px;" onclick="navTo('dashboardSiswaView')">Batal</button>
         </div>
       </section>
 
-      <!-- VIEW 4: RIWAYAT -->
-      <section id="riwayatView" class="page-view">
+      <!-- PAGE 3: PROGRAM BANGUN PAGI -->
+      <section id="bangunPagiView" class="page">
+        <div class="card">
+          <h2 class="card-title">☀️ Program Bangun Pagi</h2>
+          <p style="font-size:0.75rem; color:var(--md-text-muted); margin-bottom:12px;">
+            Batas Maksimal Bangun: <strong id="cfgJamBangun">05:30 WIT</strong>
+          </p>
+
+          <div class="camera-container">
+            <video id="webcamVideoBangun" autoplay playsinline></video>
+            <div class="watermark-overlay">
+              <strong>Selfie Langsung (Anti-Curang)</strong><br>
+              Waktu Server WIT & Koordinat GPS Terkunci
+            </div>
+          </div>
+
+          <button class="btn btn-secondary" onclick="processCheckin('Bangun')" style="margin-top:16px;">
+            ☀️ Saya Sudah Bangun
+          </button>
+        </div>
+      </section>
+
+      <!-- PAGE 4: RIWAYAT -->
+      <section id="riwayatView" class="page">
         <div class="card">
           <h2 class="card-title">📜 Riwayat Presensi</h2>
-          <div class="history-list" id="riwayatList"></div>
+          <div id="riwayatContainer"></div>
         </div>
       </section>
 
-      <!-- VIEW 5: REWARD & LEADERBOARD -->
-      <section id="rewardView" class="page-view">
+      <!-- PAGE 5: REWARD & GAMIFIKASI -->
+      <section id="rewardView" class="page">
         <div class="card">
-          <h2 class="card-title">🏆 Gamifikasi & Leaderboard</h2>
-          <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:12px;">Kumpulkan poin, capai level tertinggi, dan raih badge kebanggaan!</p>
-
-          <div style="background:var(--primary-light); padding:12px; border-radius:12px; margin-bottom:14px;">
-            <div style="font-size:0.75rem; font-weight:700;">Ketentuan Poin:</div>
-            <ul style="font-size:0.72rem; padding-left:16px; margin-top:4px;">
-              <li>Presensi Tepat Waktu = <strong>+5 Poin</strong></li>
-              <li>Streak Disiplin 7 Hari = <strong>+20 Poin Bonus</strong></li>
-              <li>Streak Disiplin 30 Hari = <strong>+100 Poin Bonus</strong></li>
-            </ul>
+          <h2 class="card-title">🏆 Reward & Leaderboard</h2>
+          
+          <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchLeaderboard('sekolah')">Sekolah</button>
+            <button class="tab-btn" onclick="switchLeaderboard('kelas')">Kelas</button>
           </div>
 
-          <h3 class="card-title" style="font-size:0.9rem;">🥇 Ranking Teratas Sekolah</h3>
-          <div class="leaderboard-list" id="leaderboardList"></div>
+          <div id="leaderboardContainer"></div>
         </div>
       </section>
 
-      <!-- VIEW 6: DASHBOARD GURU WALI -->
-      <section id="dashboardGuruView" class="page-view">
+      <!-- PAGE 6: PROFIL -->
+      <section id="profilView" class="page">
         <div class="card">
-          <h2 class="card-title">👨‍🏫 Panel Kelola Guru Wali</h2>
-          <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:14px;">
-            Pantau seluruh siswa bimbingan, kelola data, dan rekap statistik.
-          </p>
+          <h2 class="card-title">👤 Profil Saya</h2>
+          <div class="form-group"><label>Nama</label><input type="text" id="profNama" readonly></div>
+          <div class="form-group"><label>Fase & Kelas</label><input type="text" id="profKelas" readonly></div>
+          <div class="form-group"><label>Guru Wali</label><input type="text" id="profGuru" readonly></div>
+          <button class="btn btn-danger" onclick="logout()" style="margin-top:14px;">🚪 Keluar Akun</button>
+        </div>
+      </section>
 
-          <div class="stats-grid" style="margin-bottom:14px;">
-            <div class="stat-box">
-              <span class="stat-label">Total Siswa Bimbingan</span>
-              <span id="guruTotalSiswa" class="stat-val">0</span>
-            </div>
-            <div class="stat-box">
-              <span class="stat-label">Check-In Hari Ini</span>
-              <span id="guruSiswaCheckin" class="stat-val text-success">0</span>
+      <!-- PAGE 7: DASHBOARD GURU WALI -->
+      <section id="dashboardGuruView" class="page">
+        <div class="card">
+          <h2 class="card-title">👨‍🏫 Panel Guru Wali</h2>
+          
+          <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+            <button class="btn btn-primary" style="padding:8px 12px; font-size:0.75rem;" onclick="openModal('modalAddSiswa')">+ Siswa</button>
+            <button class="btn btn-outline" style="padding:8px 12px; font-size:0.75rem;" onclick="exportExcel()">📊 Export Excel</button>
+            <button class="btn btn-outline" style="padding:8px 12px; font-size:0.75rem;" onclick="exportPDF()">📄 Cetak PDF</button>
+            <button class="btn btn-outline" style="padding:8px 12px; font-size:0.75rem;" onclick="openModal('modalPengumuman')">📢 Pengumuman</button>
+          </div>
+
+          <!-- CONFIG JAM WAKE/SLEEP -->
+          <div style="background:var(--md-primary-container); padding:12px; border-radius:14px; margin-bottom:14px;">
+            <div style="font-weight:700; font-size:0.8rem; margin-bottom:6px;">⚙️ Pengaturan Jam Target</div>
+            <div style="display:flex; gap:8px;">
+              <input type="time" id="setJamBangun" value="05:30">
+              <input type="time" id="setJamTidur" value="21:30">
+              <button class="btn btn-primary" style="padding:6px 10px; font-size:0.75rem;" onclick="saveConfigJam()">Simpan</button>
             </div>
           </div>
 
-          <div class="toolbar">
-            <button class="btn btn-sm btn-primary" onclick="openModal('modalTambahSiswa')">+ Siswa</button>
-            <button class="btn btn-sm btn-secondary" onclick="openModal('modalPengumuman')">📢 Pengumuman</button>
-          </div>
-
-          <div class="table-container margin-top">
-            <table class="data-table">
+          <div style="overflow-x:auto;">
+            <table style="width:100%; font-size:0.75rem; text-align:left; border-collapse:collapse;">
               <thead>
-                <tr>
-                  <th>Nama</th>
-                  <th>Kelas</th>
-                  <th>Poin</th>
-                  <th>Status</th>
+                <tr style="border-bottom:1px solid var(--md-border); color:var(--md-text-muted);">
+                  <th style="padding:8px;">Nama</th>
+                  <th style="padding:8px;">Kelas</th>
+                  <th style="padding:8px;">Poin</th>
+                  <th style="padding:8px;">Status</th>
                 </tr>
               </thead>
-              <tbody id="tabelGuruSiswa"></tbody>
+              <tbody id="guruTabelSiswa"></tbody>
             </table>
           </div>
         </div>
@@ -577,379 +537,320 @@
 
     </main>
 
-    <!-- BOTTOM NAVIGATION (SISWA) -->
+    <!-- BOTTOM NAVIGATION (6 MENU SISWA) -->
     <nav id="bottomNav" class="bottom-nav glassmorphism hidden">
-      <button class="nav-item active" onclick="navTo('dashboardSiswaView')">
-        <span class="icon">🏠</span>
-        <span>Home</span>
+      <button class="nav-btn active" onclick="navTo('dashboardSiswaView', this)">
+        <span class="icon">🏠</span><span>Home</span>
       </button>
-      <button class="nav-item" onclick="navTo('riwayatView')">
-        <span class="icon">📜</span>
-        <span>Riwayat</span>
+      <button class="nav-btn" onclick="navTo('tidurCepatView', this)">
+        <span class="icon">🌙</span><span>Tidur</span>
       </button>
-      <button class="nav-item" onclick="navTo('rewardView')">
-        <span class="icon">🏆</span>
-        <span>Reward</span>
+      <button class="nav-btn" onclick="navTo('bangunPagiView', this)">
+        <span class="icon">☀️</span><span>Bangun</span>
       </button>
-      <button class="nav-item" onclick="logout()">
-        <span class="icon">🚪</span>
-        <span>Keluar</span>
+      <button class="nav-btn" onclick="navTo('riwayatView', this)">
+        <span class="icon">📜</span><span>Riwayat</span>
+      </button>
+      <button class="nav-btn" onclick="navTo('rewardView', this)">
+        <span class="icon">🏆</span><span>Reward</span>
+      </button>
+      <button class="nav-btn" onclick="navTo('profilView', this)">
+        <span class="icon">👤</span><span>Profil</span>
       </button>
     </nav>
 
   </div>
 
-  <!-- MODAL TAMBAH SISWA -->
-  <div id="modalTambahSiswa" class="modal-overlay hidden">
-    <div class="modal-card">
+  <!-- MODAL ADD SISWA -->
+  <div id="modalAddSiswa" class="modal hidden">
+    <div class="modal-box">
       <h3 class="card-title">Tambah Siswa Bimbingan</h3>
-      <form onsubmit="tambahSiswaSubmit(event)">
-        <div class="form-group">
-          <label>NISN</label>
-          <input type="text" id="addNisn" required>
-        </div>
-        <div class="form-group">
-          <label>Nama Lengkap</label>
-          <input type="text" id="addNama" required>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Fase</label>
-            <select id="addFase"><option value="E">E</option><option value="F">F</option></select>
-          </div>
-          <div class="form-group">
-            <label>Kelas</label>
-            <input type="text" id="addKelas" required>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary">Simpan Siswa</button>
-        <button type="button" class="btn btn-outline" style="margin-top:6px;" onclick="closeModal('modalTambahSiswa')">Batal</button>
+      <form onsubmit="addSiswaSubmit(event)">
+        <div class="form-group"><label>Nama Siswa</label><input type="text" id="newNama" required></div>
+        <div class="form-group"><label>Kelas</label><input type="text" id="newKelas" placeholder="X-1" required></div>
+        <button type="submit" class="btn btn-primary">Simpan</button>
+        <button type="button" class="btn btn-outline" style="margin-top:6px;" onclick="closeModal('modalAddSiswa')">Batal</button>
       </form>
     </div>
   </div>
 
   <!-- MODAL PENGUMUMAN -->
-  <div id="modalPengumuman" class="modal-overlay hidden">
-    <div class="modal-card">
-      <h3 class="card-title">📢 Kirim Pengumuman</h3>
-      <form onsubmit="kirimPengumumanSubmit(event)">
-        <div class="form-group">
-          <label>Judul Pengumuman</label>
-          <input type="text" id="pengumumanJudul" required>
-        </div>
-        <div class="form-group">
-          <label>Isi Pesan</label>
-          <input type="text" id="pengumumanIsi" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Sebarkan Pengumuman</button>
+  <div id="modalPengumuman" class="modal hidden">
+    <div class="modal-box">
+      <h3 class="card-title">Kirim Pengumuman</h3>
+      <form onsubmit="sendBroadcastSubmit(event)">
+        <div class="form-group"><label>Isi Pesan</label><input type="text" id="broadMsg" required></div>
+        <button type="submit" class="btn btn-primary">Kirim</button>
         <button type="button" class="btn btn-outline" style="margin-top:6px;" onclick="closeModal('modalPengumuman')">Batal</button>
       </form>
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="toast hidden">Pesan Toast</div>
+  <div id="toast" class="toast hidden">Notifikasi</div>
 
-  <!-- JAVASCRIPT LOGIC ENGINE -->
+  <!-- JAVASCRIPT ENGINE -->
   <script>
-    // URL Google Apps Script Milik Anda (Sudah Terhubung Sempurna)
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxFXYnriAe5VI2HXIOYZrZ5_QGWdh5FVMWtRPwpsOZzMnruiZgkTWSCMwyGSxSwa-Tg/exec";
 
     let currentUser = null;
-    let currentRole = null;
-    let currentActiveType = 'Bangun';
-    let userGPS = "GPS Belum Didapatkan";
-    let selectedMoodVal = "😊";
+    let selectedMood = "😊";
     let mediaStream = null;
 
-    let mockSiswaDb = [
-      { nisn: "1001", nama: "Ahmad Abdullah", fase: "E", kelas: "X-1", guruWali: "Drs. M. Hatta", totalPoin: 35, level: "🌿 Disiplin", badges: "🥉 Bronze", streak: 3 },
-      { nisn: "1002", nama: "Siti Rahma", fase: "E", kelas: "X-1", guruWali: "Drs. M. Hatta", totalPoin: 120, level: "⭐ Teladan", badges: "🥈 Silver", streak: 8 }
+    let dbSiswa = [
+      { nama: "Ahmad Abdullah", fase: "E", kelas: "X-1", guruWali: "Drs. M. Hatta", totalPoin: 45, level: "🌿 Disiplin", badge: "🥉 Bronze", status: "Sudah Bangun" },
+      { nama: "Siti Rahma", fase: "E", kelas: "X-1", guruWali: "Drs. M. Hatta", totalPoin: 150, level: "⭐ Teladan", badge: "🥈 Silver", status: "Sudah Bangun" },
+      { nama: "Budi Santoso", fase: "E", kelas: "X-2", guruWali: "Drs. M. Hatta", totalPoin: 15, level: "🌱 Pemula", badge: "🥉 Bronze", status: "Terlambat" }
     ];
 
-    let mockRiwayat = [
-      { id: "PRES-1", tanggal: "2026-07-21", tipe: "Bangun", waktu: "05:15", status: "Tepat Waktu", poin: 5 }
+    let dbRiwayat = [
+      { tipe: "Bangun", waktu: "05:15 WIT", tanggal: "2026-07-21", status: "Tepat Waktu", poin: 5, mood: "😊" },
+      { tipe: "Tidur", waktu: "21:10 WIT", tanggal: "2026-07-20", status: "Tepat Waktu", poin: 5, mood: "😴" }
     ];
 
     const quotes = [
       "Hari yang hebat dimulai dengan bangun lebih awal.",
-      "Disiplin adalah kunci utama meraih cita-cita tinggi.",
-      "Konsistensi kecil setiap hari membawa perubahan besar.",
-      "Tidur cepat menjaga kesehatan fisik dan kejernihan pikiran."
+      "Disiplin adalah kunci kesuksesan.",
+      "Kebiasaan kecil hari ini menentukan masa depanmu."
     ];
 
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("quoteText").innerText = quotes[Math.floor(Math.random() * quotes.length)];
+      initAutoGreeting();
+      renderCalendar();
+      registerPWA();
     });
 
-    function toggleTheme() {
+    function toggleDarkMode() {
       document.body.classList.toggle("dark-mode");
-      const isDark = document.body.classList.contains("dark-mode");
-      document.getElementById("themeToggleBtn").innerText = isDark ? "☀️" : "🌙";
     }
 
-    function switchLoginTab(role) {
-      document.getElementById("tabSiswaBtn").classList.remove("active");
-      document.getElementById("tabGuruBtn").classList.remove("active");
-      if (role === 'siswa') {
-        document.getElementById("tabSiswaBtn").classList.add("active");
-        document.getElementById("formLoginSiswa").classList.remove("hidden");
-        document.getElementById("formLoginGuru").classList.add("hidden");
-      } else {
-        document.getElementById("tabGuruBtn").classList.add("active");
-        document.getElementById("formLoginGuru").classList.remove("hidden");
-        document.getElementById("formLoginSiswa").classList.add("hidden");
-      }
+    function initAutoGreeting() {
+      const hour = new Date().getHours();
+      let greeting = "Selamat Pagi ☀️";
+      if (hour >= 11 && hour < 15) greeting = "Selamat Siang 🌤️";
+      else if (hour >= 15 && hour < 18) greeting = "Selamat Sore 🌅";
+      else if (hour >= 18 || hour < 4) greeting = "Selamat Malam 🌙";
+
+      document.getElementById("autoGreetingText").innerText = `${greeting}, semoga harimu menyenangkan!`;
+      document.getElementById("quoteText").innerText = `"${quotes[Math.floor(Math.random() * quotes.length)]}"`;
     }
 
-    function showToast(msg) {
-      const toast = document.getElementById("toast");
-      toast.innerText = msg;
-      toast.classList.remove("hidden");
-      setTimeout(() => toast.classList.add("hidden"), 3200);
+    function switchLogin(type) {
+      document.getElementById("tabSiswa").classList.toggle("active", type === 'siswa');
+      document.getElementById("tabGuru").classList.toggle("active", type === 'guru');
+      document.getElementById("formLoginSiswa").classList.toggle("hidden", type !== 'siswa');
+      document.getElementById("formLoginGuru").classList.toggle("hidden", type !== 'guru');
     }
 
-    function navTo(pageId) {
-      document.querySelectorAll(".page-view").forEach(p => p.classList.remove("active"));
+    function showToast(text) {
+      const t = document.getElementById("toast");
+      t.innerText = text; t.classList.remove("hidden");
+      setTimeout(() => t.classList.add("hidden"), 3000);
+    }
+
+    function navTo(pageId, btnEl) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
       document.getElementById(pageId).classList.add("active");
 
-      if (pageId === 'presensiCameraView') {
-        startCamera();
-        initGPS();
-      } else {
-        stopCamera();
+      if (btnEl) {
+        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+        btnEl.classList.add("active");
       }
 
+      if (pageId === 'tidurCepatView' || pageId === 'bangunPagiView') startCamera();
+      else stopCamera();
+
       if (pageId === 'riwayatView') renderRiwayat();
-      if (pageId === 'rewardView') renderLeaderboard();
+      if (pageId === 'rewardView') switchLeaderboard('sekolah');
+    }
+
+    async function sendToGAS(payload) {
+      try {
+        await fetch(GAS_API_URL, {
+          method: "POST", mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+      } catch (e) { console.error(e); }
+    }
+
+    function handleLoginSiswa(e) {
+      e.preventDefault();
+      const nama = document.getElementById("loginNama").value;
+      const fase = document.getElementById("loginFase").value;
+      const kelas = document.getElementById("loginKelas").value;
+
+      currentUser = { nama, fase, kelas, guruWali: "Drs. M. Hatta", totalPoin: 20, level: "🌱 Pemula", badge: "🥉 Bronze" };
+      
+      document.getElementById("dashNama").innerText = nama;
+      document.getElementById("dashMeta").innerText = `Fase ${fase} - Kelas ${kelas} | Guru Wali: ${currentUser.guruWali}`;
+      document.getElementById("profNama").value = nama;
+      document.getElementById("profKelas").value = `Fase ${fase} - Kelas ${kelas}`;
+      document.getElementById("profGuru").value = currentUser.guruWali;
+
+      document.getElementById("bottomNav").classList.remove("hidden");
+      navTo("dashboardSiswaView");
+      initChart();
+      showToast(`Selamat datang, ${nama}!`);
+
+      sendToGAS({ action: "loginSiswa", payload: { nama, fase, kelas } });
+    }
+
+    function handleLoginGuru(e) {
+      e.preventDefault();
+      currentUser = { nama: document.getElementById("loginGuruNama").value, role: "guru" };
+      renderGuruTable();
+      navTo("dashboardGuruView");
+      showToast("Selamat datang, Bapak/Ibu Guru Wali!");
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById("bottomNav").classList.add("hidden");
+      navTo("loginView");
+    }
+
+    async function startCamera() {
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+        document.getElementById("webcamVideo").srcObject = mediaStream;
+        document.getElementById("webcamVideoBangun").srcObject = mediaStream;
+      } catch (e) { showToast("⚠️ Akses kamera tidak diizinkan!"); }
+    }
+
+    function stopCamera() {
+      if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+    }
+
+    function setMood(el, mood) {
+      document.querySelectorAll(".mood-item").forEach(m => m.classList.remove("active"));
+      el.classList.add("active"); selectedMood = mood;
+    }
+
+    async function processCheckin(tipe) {
+      showToast(`Memproses check-in ${tipe}...`);
+      if (typeof confetti === 'function') confetti();
+
+      const timeStr = new Date().toLocaleTimeString('id-ID');
+      dbRiwayat.unshift({ tipe, waktu: `${timeStr} WIT`, tanggal: new Date().toLocaleDateString('id-ID'), status: "Tepat Waktu", poin: 5, mood: selectedMood });
+
+      sendToGAS({
+        action: "submitPresensi",
+        payload: { nama: currentUser.nama, kelas: currentUser.kelas, tipe, waktu: timeStr, mood: selectedMood }
+      });
+
+      setTimeout(() => {
+        alert(tipe === 'Tidur' ? "Selamat beristirahat. Sampai jumpa besok pagi." : "Selamat! Kamu berhasil bangun tepat waktu.");
+        navTo("dashboardSiswaView");
+      }, 500);
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById("calendarGrid");
+      const days = ['S', 'S', 'R', 'K', 'J', 'S', 'M'];
+      let html = days.map(d => `<div class="cal-day-head">${d}</div>`).join('');
+
+      for (let i = 1; i <= 31; i++) {
+        let cls = "green";
+        if (i === 5 || i === 12) cls = "yellow";
+        if (i === 18) cls = "red";
+        html += `<div class="cal-day ${cls}">${i}</div>`;
+      }
+      grid.innerHTML = html;
+    }
+
+    function renderRiwayat() {
+      const container = document.getElementById("riwayatContainer");
+      container.innerHTML = dbRiwayat.map(r => `
+        <div class="list-item">
+          <span style="font-size:1.5rem">${r.tipe === 'Bangun' ? '☀️' : '🌙'}</span>
+          <div style="flex:1;">
+            <div style="font-weight:800; font-size:0.85rem;">${r.tipe} (${r.mood})</div>
+            <div style="font-size:0.7rem; color:var(--md-text-muted);">${r.tanggal} - ${r.waktu}</div>
+          </div>
+          <span style="font-weight:800; color:var(--md-secondary);">+${r.poin} Poin</span>
+        </div>
+      `).join('');
+    }
+
+    function switchLeaderboard(type) {
+      const c = document.getElementById("leaderboardContainer");
+      c.innerHTML = dbSiswa.map((s, idx) => `
+        <div class="list-item">
+          <span class="rank-num">#${idx+1}</span>
+          <div style="flex:1;">
+            <div style="font-weight:800; font-size:0.85rem;">${s.nama} (${s.kelas})</div>
+            <div style="font-size:0.7rem; color:var(--md-text-muted);">${s.level} | ${s.badge}</div>
+          </div>
+          <span style="font-weight:800; color:var(--md-primary);">${s.totalPoin} Pts</span>
+        </div>
+      `).join('');
+    }
+
+    function renderGuruTable() {
+      const tbody = document.getElementById("guruTabelSiswa");
+      tbody.innerHTML = dbSiswa.map(s => `
+        <tr style="border-bottom:1px solid var(--md-border);">
+          <td style="padding:8px;"><strong>${s.nama}</strong></td>
+          <td style="padding:8px;">${s.kelas}</td>
+          <td style="padding:8px;">${s.totalPoin}</td>
+          <td style="padding:8px; color:var(--md-secondary); font-weight:700;">${s.status}</td>
+        </tr>
+      `).join('');
+    }
+
+    function saveConfigJam() {
+      document.getElementById("cfgJamBangun").innerText = document.getElementById("setJamBangun").value + " WIT";
+      document.getElementById("cfgJamTidur").innerText = document.getElementById("setJamTidur").value + " WIT";
+      showToast("Jam target berhasil diperbarui!");
+    }
+
+    function exportExcel() {
+      const ws = XLSX.utils.json_to_sheet(dbSiswa);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Siswa");
+      XLSX.writeFile(wb, "Rekap_Disiplin_SMAN15.xlsx");
+    }
+
+    function exportPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text("Laporan Kedisiplinan SMAN 15 Maluku Tengah", 10, 10);
+      let y = 20;
+      dbSiswa.forEach(s => { doc.text(`${s.nama} | ${s.kelas} | Poin: ${s.totalPoin}`, 10, y); y += 10; });
+      doc.save("Laporan_Disiplin.pdf");
     }
 
     function openModal(id) { document.getElementById(id).classList.remove("hidden"); }
     function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
 
-    // FUNGSI PENGIRIMAN DATA ANTI-CORS BROWSER
-    async function sendToGAS(payloadData) {
-      try {
-        await fetch(GAS_API_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payloadData)
-        });
-        return true;
-      } catch (err) {
-        console.error("Gagal Mengirim ke Apps Script:", err);
-        return false;
-      }
-    }
-
-    async function loginSiswa(e) {
+    function addSiswaSubmit(e) {
       e.preventDefault();
-      const nama = document.getElementById("loginNamaSiswa").value.trim();
-      const fase = document.getElementById("loginFase").value;
-      const kelas = document.getElementById("loginKelas").value.trim();
-
-      showToast("⏳ Memproses Login...");
-
-      currentUser = {
-        nama: nama,
-        fase: fase,
-        kelas: kelas,
-        guruWali: "Wali Kelas SMAN 15",
-        totalPoin: 10,
-        level: "🌱 Pemula",
-        badges: "🥉 Bronze"
-      };
-
-      // Kirim Log Login ke Google Sheets
-      sendToGAS({
-        action: "loginSiswa",
-        payload: { nama, fase, kelas }
-      });
-
-      setupUserSession('siswa');
+      dbSiswa.push({ nama: document.getElementById("newNama").value, kelas: document.getElementById("newKelas").value, totalPoin: 0, level: "🌱 Pemula", badge: "🥉 Bronze", status: "Belum Checkin" });
+      renderGuruTable(); closeModal("modalAddSiswa"); showToast("Siswa berhasil ditambahkan!");
     }
 
-    async function loginGuru(e) {
+    function sendBroadcastSubmit(e) {
       e.preventDefault();
-      const namaGuru = document.getElementById("loginNamaGuru").value.trim();
-      currentUser = { nama: namaGuru, role: 'guru' };
-      currentRole = 'guru';
-
-      document.getElementById("guruTotalSiswa").innerText = mockSiswaDb.length;
-      document.getElementById("guruSiswaCheckin").innerText = "1";
-      renderTabelGuru();
-
-      navTo("dashboardGuruView");
-      showToast("Selamat Datang, " + namaGuru);
-    }
-
-    function setupUserSession(role) {
-      currentRole = role;
-      renderSiswaDashboard();
-      document.getElementById("bottomNav").classList.remove("hidden");
-      navTo("dashboardSiswaView");
-      showToast("Selamat Datang, " + currentUser.nama);
-    }
-
-    function logout() {
-      currentUser = null;
-      currentRole = null;
-      document.getElementById("bottomNav").classList.add("hidden");
-      navTo("loginView");
-      showToast("Berhasil keluar dari akun");
-    }
-
-    function renderSiswaDashboard() {
-      if (!currentUser) return;
-      document.getElementById("userNama").innerText = currentUser.nama;
-      document.getElementById("userInfo").innerText = `Fase ${currentUser.fase} - Kelas ${currentUser.kelas} | Guru Wali: ${currentUser.guruWali || '-'}`;
-      document.getElementById("userLevel").innerText = currentUser.level || "🌱 Pemula";
-      document.getElementById("userBadge").innerText = currentUser.badges || "🥉 Bronze";
-      document.getElementById("userPoin").innerText = currentUser.totalPoin || 10;
-      initChart();
-    }
-
-    function startPresensi(tipe) {
-      currentActiveType = tipe;
-      document.getElementById("presensiTitle").innerText = `Presensi ${tipe} Cepat`;
-      navTo("presensiCameraView");
-    }
-
-    async function startCamera() {
-      try {
-        const video = document.getElementById("webcam");
-        mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-        video.srcObject = mediaStream;
-      } catch (e) {
-        showToast("⚠️ Akses kamera tidak tersedia / diizinkan");
-      }
-    }
-
-    function stopCamera() {
-      if (mediaStream) {
-        mediaStream.getTracks().forEach(track => track.stop());
-        mediaStream = null;
-      }
-    }
-
-    function initGPS() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            userGPS = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
-            document.getElementById("gpsStatus").innerText = `📍 GPS Terkunci: ${userGPS}`;
-          },
-          () => { document.getElementById("gpsStatus").innerText = "📍 GPS: Akses Ditolak/Off"; }
-        );
-      }
-    }
-
-    function selectMood(btn, mood) {
-      document.querySelectorAll(".mood-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      selectedMoodVal = mood;
-    }
-
-    async function captureAndSubmit() {
-      showToast("⏳ Menyimpan presensi ke Google Sheets...");
-      
-      const payloadData = {
-        action: "submitPresensi",
-        payload: {
-          nama: currentUser.nama,
-          kelas: currentUser.kelas,
-          tipe: currentActiveType,
-          waktu: new Date().toLocaleTimeString('id-ID', { timeZone: 'Asia/Jayapura' }),
-          gps: userGPS,
-          mood: selectedMoodVal
-        }
-      };
-
-      // Kirim Data Presensi Langsung ke Google Apps Script
-      await sendToGAS(payloadData);
-
-      if (typeof confetti === 'function') confetti();
-      showToast("🎉 Presensi Berhasil Disimpan!");
-      navTo("dashboardSiswaView");
-    }
-
-    function renderRiwayat() {
-      const list = document.getElementById("riwayatList");
-      list.innerHTML = mockRiwayat.map(item => `
-        <div class="history-item">
-          <span style="font-size:1.5rem">${item.tipe === 'Bangun' ? '☀️' : '🌙'}</span>
-          <div class="history-details">
-            <div class="history-title">${item.tipe} - ${item.waktu} WIT</div>
-            <div class="history-meta">${item.tanggal}</div>
-          </div>
-          <span class="badge-status tepat">+${item.poin} Poin</span>
-        </div>
-      `).join('');
-    }
-
-    function renderLeaderboard() {
-      const list = document.getElementById("leaderboardList");
-      list.innerHTML = mockSiswaDb.map((s, idx) => `
-        <div class="rank-item">
-          <div style="font-weight:800; font-size:1.1rem; width:24px;">#${idx+1}</div>
-          <div style="flex:1;">
-            <div style="font-weight:700; font-size:0.85rem;">${s.nama} (${s.kelas})</div>
-            <div style="font-size:0.7rem; color:var(--text-muted);">${s.level}</div>
-          </div>
-          <div style="font-weight:800; color:var(--primary);">${s.totalPoin} Pts</div>
-        </div>
-      `).join('');
-    }
-
-    function renderTabelGuru() {
-      const tbody = document.getElementById("tabelGuruSiswa");
-      tbody.innerHTML = mockSiswaDb.map(s => `
-        <tr>
-          <td><strong>${s.nama}</strong></td>
-          <td>${s.kelas}</td>
-          <td>${s.totalPoin}</td>
-          <td><span class="badge-status tepat">Aktif</span></td>
-        </tr>
-      `).join('');
-    }
-
-    function tambahSiswaSubmit(e) {
-      e.preventDefault();
-      const nisn = document.getElementById("addNisn").value;
-      const nama = document.getElementById("addNama").value;
-      const fase = document.getElementById("addFase").value;
-      const kelas = document.getElementById("addKelas").value;
-      mockSiswaDb.push({ nisn, nama, fase, kelas, guruWali: currentUser.nama, totalPoin: 0, level: "🌱 Pemula", badges: "🥉 Bronze", streak: 0 });
-      renderTabelGuru();
-      closeModal("modalTambahSiswa");
-      showToast("Siswa Berhasil Ditambahkan!");
-    }
-
-    function kirimPengumumanSubmit(e) {
-      e.preventDefault();
-      const judul = document.getElementById("pengumumanJudul").value;
-      const isi = document.getElementById("pengumumanIsi").value;
-      document.getElementById("pengumumanFeed").innerHTML = `<strong>${judul}:</strong> ${isi}`;
-      closeModal("modalPengumuman");
-      showToast("Pengumuman Terkirim!");
+      closeModal("modalPengumuman"); showToast("Pengumuman berhasil disebarkan!");
     }
 
     function initChart() {
-      const ctx = document.getElementById('chartSiswa');
+      const ctx = document.getElementById('chartSiswaProgress');
       if (!ctx) return;
       new Chart(ctx, {
         type: 'line',
         data: {
           labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
-          datasets: [{
-            label: 'Kedisiplinan (WIT)',
-            data: [5.1, 5.0, 5.2, 5.15, 5.0, 5.3, 5.1],
-            borderColor: '#2563eb',
-            tension: 0.3
-          }]
+          datasets: [{ label: 'Jam Bangun WIT', data: [5.1, 5.0, 5.2, 5.15, 5.0, 5.3, 5.1], borderColor: '#1d4ed8', tension: 0.3 }]
         }
       });
+    }
+
+    function registerPWA() {
+      if ('serviceWorker' in navigator) {
+        const swBlob = new Blob([`self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));`], { type: 'application/javascript' });
+        navigator.serviceWorker.register(URL.createObjectURL(swBlob));
+      }
     }
   </script>
 </body>
