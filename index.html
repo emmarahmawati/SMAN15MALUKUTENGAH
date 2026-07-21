@@ -1,248 +1,380 @@
-<script>
-  // ====================================================
-  // KONFIGURASI API GOOGLE APPS SCRIPT
-  // ====================================================
-  const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwSUCHwL7_QwROxMiwiC9-rUL9nNFd9KD_Qm-PhBWC3bI7Jv58rZnoj6StMb_w3hCa-/exec";
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplikasi Presensi Siswa - SMAN 15 Maluku Tengah</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800 font-sans pb-20">
 
-  // State Global
-  let currentUser = null;
-  let dbSiswa = [];
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast" class="fixed top-5 right-5 z-50 hidden bg-slate-800 text-white px-4 py-3 rounded-xl shadow-lg text-sm transition-opacity duration-300">
+    <span id="toastMsg">Pesan Notifikasi</span>
+  </div>
 
-  // FUNGSI PENGAMAN (Mencegah Layar Blank jika fungsi UI tidak ada)
-  function safeShowToast(msg) {
-    if (typeof showToast === "function") {
-      showToast(msg);
-    } else {
-      console.log("[TOAST]:", msg);
-      alert(msg); // Fallback jika showToast belum dibuat
+  <!-- CONTAINER UTAMA -->
+  <div class="max-w-md mx-auto bg-white min-h-screen shadow-md flex flex-col relative">
+
+    <!-- HEADER BAR -->
+    <header class="bg-blue-600 text-white p-4 rounded-b-2xl shadow-md">
+      <h1 class="text-lg font-bold text-center">SMAN 15 MALUKU TENGAH</h1>
+      <p class="text-xs text-center text-blue-100">Aplikasi Presensi & Monitoring Karakter</p>
+    </header>
+
+    <!-- SECTION 1: HALAMAN LOGIN -->
+    <main id="pageLogin" class="p-6 flex-1 flex flex-col justify-center">
+      <!-- TAB SWITCHER LOGIN -->
+      <div class="flex border-b border-gray-200 mb-6">
+        <button onclick="switchLoginTab('siswa')" id="tabSiswaBtn" class="flex-1 py-2 font-bold border-b-2 border-blue-600 text-blue-600">Siswa</button>
+        <button onclick="switchLoginTab('guru')" id="tabGuruBtn" class="flex-1 py-2 font-bold border-b-2 border-transparent text-gray-400">Guru Wali</button>
+      </div>
+
+      <!-- FORM LOGIN SISWA -->
+      <form id="formLoginSiswa" onsubmit="handleLoginSiswa(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Nama Lengkap</label>
+          <input type="text" id="loginNama" required placeholder="Masukkan Nama Siswa" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Fase</label>
+            <select id="loginFase" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+              <option value="E">Fase E</option>
+              <option value="F">Fase F</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Kelas</label>
+            <input type="text" id="loginKelas" required placeholder="Contoh: X-1" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+          </div>
+        </div>
+        <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition shadow">Masuk Aplikasi</button>
+      </form>
+
+      <!-- FORM LOGIN GURU -->
+      <form id="formLoginGuru" onsubmit="handleLoginGuru(event)" class="space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Nama Guru Wali</label>
+          <input type="text" id="loginGuruNama" required placeholder="Masukkan Nama Guru" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+        </div>
+        <button type="submit" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-700 transition shadow">Masuk Dashboard Guru</button>
+      </form>
+    </main>
+
+    <!-- SECTION 2: DASHBOARD SISWA VIEW -->
+    <main id="dashboardSiswaView" class="p-6 flex-1 hidden space-y-4">
+      <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+        <h2 id="dashNama" class="text-xl font-bold text-blue-900">Nama Siswa</h2>
+        <p id="dashMeta" class="text-xs text-blue-700">Fase E - Kelas X-1 | Guru Wali: -</p>
+      </div>
+
+      <div class="bg-white p-4 border rounded-2xl shadow-sm">
+        <h3 class="text-sm font-bold text-gray-700 mb-2">Profil Saya</h3>
+        <div class="space-y-2 text-xs">
+          <div><span class="text-gray-400">Nama:</span> <input id="profNama" readonly class="w-full bg-gray-50 p-2 rounded border"></div>
+          <div><span class="text-gray-400">Kelas:</span> <input id="profKelas" readonly class="w-full bg-gray-50 p-2 rounded border"></div>
+          <div><span class="text-gray-400">Guru Wali:</span> <input id="profGuru" readonly class="w-full bg-gray-50 p-2 rounded border"></div>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 border rounded-2xl shadow-sm">
+        <h3 class="text-sm font-bold text-gray-700 mb-2">Statistik Kehadiran</h3>
+        <canvas id="siswaChart" class="w-full h-40"></canvas>
+      </div>
+    </main>
+
+    <!-- SECTION 3: DASHBOARD GURU VIEW -->
+    <main id="dashboardGuruView" class="p-6 flex-1 hidden space-y-4">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-lg font-bold text-gray-800">Dashboard Guru Wali</h2>
+          <p class="text-xs text-gray-500">Kelola Data Siswa Real-Time</p>
+        </div>
+        <button onclick="openModal('modalAddSiswa')" class="bg-emerald-600 text-white px-3 py-2 rounded-xl text-xs font-bold shadow hover:bg-emerald-700">+ Siswa</button>
+      </div>
+
+      <!-- STATISTIK GURU -->
+      <div class="grid grid-cols-4 gap-2 text-center">
+        <div class="bg-gray-100 p-2 rounded-xl"><p class="text-xs text-gray-500">Total</p><p id="guruStatTotal" class="font-bold text-sm">0</p></div>
+        <div class="bg-green-100 p-2 rounded-xl"><p class="text-xs text-green-700">Bangun</p><p id="guruStatBangun" class="font-bold text-sm text-green-800">0</p></div>
+        <div class="bg-blue-100 p-2 rounded-xl"><p class="text-xs text-blue-700">Tidur</p><p id="guruStatTidur" class="font-bold text-sm text-blue-800">0</p></div>
+        <div class="bg-red-100 p-2 rounded-xl"><p class="text-xs text-red-700">Belum</p><p id="guruStatTerlambat" class="font-bold text-sm text-red-800">0</p></div>
+      </div>
+
+      <!-- TABEL SISWA -->
+      <div class="bg-white border rounded-2xl overflow-hidden shadow-sm">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-gray-50 border-b">
+            <tr>
+              <th class="p-3">Nama</th>
+              <th class="p-3">Kelas</th>
+              <th class="p-3">Status</th>
+            </tr>
+          </thead>
+          <tbody id="guruTableBody">
+            <tr><td colspan="3" class="p-3 text-center text-gray-400">Belum ada data siswa</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t flex justify-around py-3 hidden shadow-lg">
+      <button onclick="logout()" class="text-xs font-bold text-red-500">Keluar</button>
+    </nav>
+  </div>
+
+  <!-- MODAL TAMBAH SISWA -->
+  <div id="modalAddSiswa" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white w-full max-w-xs rounded-2xl p-5 space-y-4">
+      <h3 class="font-bold text-sm text-gray-800">Tambah Siswa Binaan</h3>
+      <form onsubmit="addSiswaSubmit(event)" class="space-y-3">
+        <input type="text" id="newNama" required placeholder="Nama Siswa" class="w-full p-2 border rounded-xl text-xs">
+        <input type="text" id="newKelas" required placeholder="Kelas (contoh: X-1)" class="w-full p-2 border rounded-xl text-xs">
+        <select id="newFase" class="w-full p-2 border rounded-xl text-xs">
+          <option value="E">Fase E</option>
+          <option value="F">Fase F</option>
+        </select>
+        <div class="flex gap-2">
+          <button type="button" onclick="closeModal('modalAddSiswa')" class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold">Batal</button>
+          <button type="submit" class="flex-1 bg-emerald-600 text-white py-2 rounded-xl text-xs font-bold">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // URL Deployment Apps Script Anda
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwSUCHwL7_QwROxMiwiC9-rUL9nNFd9KD_Qm-PhBWC3bI7Jv58rZnoj6StMb_w3hCa-/exec";
+
+    let currentUser = null;
+    let dbSiswa = [];
+
+    // FUNGSI NOTIFIKASI TOAST
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      const toastMsg = document.getElementById("toastMsg");
+      toastMsg.innerText = msg;
+      toast.classList.remove("hidden");
+      setTimeout(() => { toast.classList.add("hidden"); }, 3000);
     }
-  }
 
-  function safeSwitchPage(pageId) {
-    if (typeof switchPage === "function") {
-      switchPage(pageId);
-    } else {
-      console.log("[SWITCH PAGE]:", pageId);
-    }
-  }
-
-  // ====================================================
-  // 1. LOGIN SISWA (VALDIASI KETAT)
-  // ====================================================
-  async function handleLoginSiswa(e) {
-    if (e) e.preventDefault();
-    
-    const elNama = document.getElementById("loginNama");
-    const elFase = document.getElementById("loginFase");
-    const elKelas = document.getElementById("loginKelas");
-
-    if (!elNama || !elKelas) {
-      safeShowToast("⚠️ Elemen Form Login tidak ditemukan!");
-      return;
-    }
-
-    const namaInput = elNama.value.trim();
-    const faseInput = elFase ? elFase.value : "E";
-    const kelasInput = elKelas.value.trim();
-
-    if (!namaInput || !kelasInput) {
-      safeShowToast("⚠️ Mohon isi Nama dan Kelas!");
-      return;
-    }
-
-    safeShowToast("⏳ Memeriksa data di database...");
-
-    try {
-      const response = await fetch(GAS_API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "loginSiswa",
-          payload: {
-            nama: namaInput,
-            fase: faseInput,
-            kelas: kelasInput
-          }
-        })
-      });
-
-      const res = await response.json();
-
-      if (res.success && res.siswa) {
-        currentUser = {
-          role: 'siswa',
-          nama: res.siswa.nama,
-          fase: res.siswa.fase || faseInput,
-          kelas: res.siswa.kelas,
-          guruWali: res.siswa.guruWali || "Belum Ditentukan",
-          poin: res.siswa.totalPoin || 0,
-          level: res.siswa.level || "🌱 Pemula",
-          badge: res.siswa.badges || "🥉 Bronze"
-        };
-
-        // Safe DOM Updates
-        if (document.getElementById("dashNama")) document.getElementById("dashNama").innerText = currentUser.nama;
-        if (document.getElementById("dashMeta")) document.getElementById("dashMeta").innerText = `Fase ${currentUser.fase} - Kelas ${currentUser.kelas} | Guru Wali: ${currentUser.guruWali}`;
-        if (document.getElementById("profNama")) document.getElementById("profNama").value = currentUser.nama;
-        if (document.getElementById("profKelas")) document.getElementById("profKelas").value = `Fase ${currentUser.fase} - ${currentUser.kelas}`;
-        if (document.getElementById("profGuru")) document.getElementById("profGuru").value = currentUser.guruWali;
-
-        safeSwitchPage("dashboardSiswaView");
-        if (document.getElementById("bottomNav")) document.getElementById("bottomNav").classList.remove("hidden");
-        
-        if (typeof initSiswaChart === "function") initSiswaChart();
-        safeShowToast(`Selamat datang, ${currentUser.nama}! 🎉`);
-
+    // FUNGSI NAVIGASI
+    function switchLoginTab(type) {
+      if (type === 'siswa') {
+        document.getElementById("formLoginSiswa").classList.remove("hidden");
+        document.getElementById("formLoginGuru").classList.add("hidden");
+        document.getElementById("tabSiswaBtn").className = "flex-1 py-2 font-bold border-b-2 border-blue-600 text-blue-600";
+        document.getElementById("tabGuruBtn").className = "flex-1 py-2 font-bold border-b-2 border-transparent text-gray-400";
       } else {
-        // ❌ DITOLAK JIKA TIDAK ADA DI DATABASE
-        safeShowToast("❌ Nama/Kelas tidak terdaftar! Hubungi Guru Wali Anda.");
+        document.getElementById("formLoginSiswa").classList.add("hidden");
+        document.getElementById("formLoginGuru").classList.remove("hidden");
+        document.getElementById("tabGuruBtn").className = "flex-1 py-2 font-bold border-b-2 border-emerald-600 text-emerald-600";
+        document.getElementById("tabSiswaBtn").className = "flex-1 py-2 font-bold border-b-2 border-transparent text-gray-400";
+      }
+    }
+
+    function openModal(id) { document.getElementById(id).classList.remove("hidden"); }
+    function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
+
+    function switchPage(pageId) {
+      document.getElementById("pageLogin").classList.add("hidden");
+      document.getElementById("dashboardSiswaView").classList.add("hidden");
+      document.getElementById("dashboardGuruView").classList.add("hidden");
+
+      document.getElementById(pageId).classList.remove("hidden");
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById("bottomNav").classList.add("hidden");
+      switchPage("pageLogin");
+      showToast("Berhasil keluar.");
+    }
+
+    // 1. PERBAIKAN: LOGIN SISWA (VALDIASI KETAT)
+    async function handleLoginSiswa(e) {
+      e.preventDefault();
+      const namaInput = document.getElementById("loginNama").value.trim();
+      const faseInput = document.getElementById("loginFase").value;
+      const kelasInput = document.getElementById("loginKelas").value.trim();
+
+      if (!namaInput || !kelasInput) {
+        showToast("⚠️ Mohon isi Nama dan Kelas!");
+        return;
       }
 
-    } catch (err) {
-      console.error("Login Error:", err);
-      safeShowToast("❌ Gagal terhubung ke database server.");
-    }
-  }
+      showToast("⏳ Memeriksa database...");
 
-  // ====================================================
-  // 2. LOGIN GURU WALI & GET DATA REAL-TIME
-  // ====================================================
-  async function handleLoginGuru(e) {
-    if (e) e.preventDefault();
-    const elGuru = document.getElementById("loginGuruNama");
-    const namaGuru = elGuru ? elGuru.value.trim() : "";
+      try {
+        const response = await fetch(GAS_API_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "loginSiswa",
+            payload: { nama: namaInput, fase: faseInput, kelas: kelasInput }
+          })
+        });
 
-    if (!namaGuru) {
-      safeShowToast("⚠️ Masukkan nama Guru Wali!");
-      return;
-    }
+        const res = await response.json();
 
-    currentUser = {
-      role: 'guru',
-      nama: namaGuru
-    };
+        // BLOKIR SISWA YANG TIDAK ADA DI DATABASE
+        if (res.success && res.siswa) {
+          currentUser = {
+            role: 'siswa',
+            nama: res.siswa.nama,
+            fase: res.siswa.fase || faseInput,
+            kelas: res.siswa.kelas,
+            guruWali: res.siswa.guruWali || "Belum Ditentukan",
+            poin: res.siswa.totalPoin || 0,
+            level: res.siswa.level || "🌱 Pemula",
+            badge: res.siswa.badges || "🥉 Bronze"
+          };
 
-    safeSwitchPage("dashboardGuruView");
-    if (document.getElementById("bottomNav")) document.getElementById("bottomNav").classList.add("hidden");
+          document.getElementById("dashNama").innerText = currentUser.nama;
+          document.getElementById("dashMeta").innerText = `Fase ${currentUser.fase} - Kelas ${currentUser.kelas} | Guru Wali: ${currentUser.guruWali}`;
+          document.getElementById("profNama").value = currentUser.nama;
+          document.getElementById("profKelas").value = `Fase ${currentUser.fase} - ${currentUser.kelas}`;
+          document.getElementById("profGuru").value = currentUser.guruWali;
 
-    await fetchSiswaFromGAS();
-    safeShowToast(`Selamat datang, ${namaGuru}!`);
-  }
+          switchPage("dashboardSiswaView");
+          document.getElementById("bottomNav").classList.remove("hidden");
+          showToast(`Selamat datang, ${currentUser.nama}! 🎉`);
 
-  async function fetchSiswaFromGAS() {
-    if (!currentUser || currentUser.role !== 'guru') return;
+        } else {
+          // DITOLAK
+          showToast("❌ Nama/Kelas tidak terdaftar! Hubungi Guru Wali Anda.");
+        }
 
-    safeShowToast("🔄 Memuat data siswa terbaru...");
-
-    try {
-      const response = await fetch(GAS_API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "getSiswaByGuru",
-          payload: { guruWali: currentUser.nama }
-        })
-      });
-
-      const res = await response.json();
-
-      if (res.success && Array.isArray(res.data)) {
-        dbSiswa = res.data;
-      } else {
-        dbSiswa = [];
+      } catch (err) {
+        console.error("Login Error:", err);
+        showToast("❌ Gagal terhubung ke database server.");
       }
+    }
+
+    // 2. PERBAIKAN: LOGIN GURU & REAL-TIME FETCH
+    async function handleLoginGuru(e) {
+      e.preventDefault();
+      const namaGuru = document.getElementById("loginGuruNama").value.trim();
+
+      if (!namaGuru) {
+        showToast("⚠️ Masukkan nama Guru Wali!");
+        return;
+      }
+
+      currentUser = { role: 'guru', nama: namaGuru };
+      switchPage("dashboardGuruView");
+      document.getElementById("bottomNav").classList.remove("hidden");
+
+      await fetchSiswaFromGAS();
+      showToast(`Selamat datang, ${namaGuru}!`);
+    }
+
+    async function fetchSiswaFromGAS() {
+      if (!currentUser || currentUser.role !== 'guru') return;
+
+      showToast("🔄 Memuat data siswa...");
+
+      try {
+        const response = await fetch(GAS_API_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "getSiswaByGuru",
+            payload: { guruWali: currentUser.nama }
+          })
+        });
+
+        const res = await response.json();
+        if (res.success && Array.isArray(res.data)) {
+          dbSiswa = res.data;
+        } else {
+          dbSiswa = [];
+        }
+        renderGuruDashboard();
+      } catch (err) {
+        console.error("Fetch Error:", err);
+        renderGuruDashboard();
+      }
+    }
+
+    // 3. PERBAIKAN: TAMBAH SISWA (AUTO-SYNC DENGAN APPS SCRIPT)
+    async function addSiswaSubmit(e) {
+      e.preventDefault();
+      const nama = document.getElementById("newNama").value.trim();
+      const kelas = document.getElementById("newKelas").value.trim();
+      const fase = document.getElementById("newFase").value;
+
+      if (!nama || !kelas) {
+        showToast("⚠️ Lengkapi nama dan kelas!");
+        return;
+      }
+
+      showToast("⏳ Menyimpan siswa baru...");
+
+      // Tampilkan lokal dulu
+      dbSiswa.push({
+        nama: nama, kelas: kelas, fase: fase, status: "Belum Absen"
+      });
       renderGuruDashboard();
-    } catch (err) {
-      console.error("Fetch Error:", err);
-      renderGuruDashboard();
-    }
-  }
 
-  // ====================================================
-  // 3. TAMBAH SISWA BARU
-  // ====================================================
-  async function addSiswaSubmit(e) {
-    if (e) e.preventDefault();
-    const elNama = document.getElementById("newNama");
-    const elKelas = document.getElementById("newKelas");
-    const elFase = document.getElementById("newFase");
+      closeModal("modalAddSiswa");
+      document.getElementById("newNama").value = "";
+      document.getElementById("newKelas").value = "";
 
-    const nama = elNama ? elNama.value.trim() : "";
-    const kelas = elKelas ? elKelas.value.trim() : "";
-    const fase = elFase ? elFase.value : "E";
+      // Kirim ke backend Google Sheets
+      try {
+        const response = await fetch(GAS_API_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "tambahSiswa",
+            payload: { nama: nama, kelas: kelas, fase: fase, guruWali: currentUser.nama }
+          })
+        });
 
-    if (!nama || !kelas) {
-      safeShowToast("⚠️ Lengkapi nama dan kelas!");
-      return;
-    }
-
-    safeShowToast("⏳ Menyimpan siswa baru...");
-
-    // Update lokal sementara
-    const tempStudent = {
-      id: Date.now(),
-      nama: nama,
-      kelas: kelas,
-      fase: fase,
-      guruWali: currentUser.nama,
-      totalPoin: 0,
-      level: "🌱 Pemula",
-      badge: "🥉 Bronze",
-      status: "Belum Absen",
-      jamBangun: "-",
-      jamTidur: "-"
-    };
-    dbSiswa.push(tempStudent);
-    renderGuruDashboard();
-
-    if (typeof closeModal === "function") closeModal("modalAddSiswa");
-    if (elNama) elNama.value = "";
-    if (elKelas) elKelas.value = "";
-
-    try {
-      const response = await fetch(GAS_API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "tambahSiswa",
-          payload: {
-            nama: nama,
-            kelas: kelas,
-            fase: fase,
-            guruWali: currentUser.nama
-          }
-        })
-      });
-
-      const res = await response.json();
-
-      if (res.success) {
-        safeShowToast("✅ Siswa berhasil ditambahkan!");
-        await fetchSiswaFromGAS();
-      } else {
-        safeShowToast("❌ Gagal menyimpan ke server!");
+        const res = await response.json();
+        if (res.success) {
+          showToast("✅ Siswa berhasil ditambahkan!");
+          await fetchSiswaFromGAS(); // Sync ulang
+        } else {
+          showToast("❌ Gagal menyimpan ke server!");
+        }
+      } catch (err) {
+        console.error("Add Student Error:", err);
+        showToast("⚠️ Terjadi kesalahan koneksi!");
       }
-
-    } catch (err) {
-      console.error("Add Student Error:", err);
-      safeShowToast("⚠️ Terjadi kesalahan koneksi!");
     }
-  }
 
-  // ====================================================
-  // 4. RENDER DASHBOARD GURU
-  // ====================================================
-  function renderGuruDashboard() {
-    if (!currentUser || currentUser.role !== 'guru') return;
+    // RENDER DASHBOARD GURU
+    function renderGuruDashboard() {
+      if (!currentUser || currentUser.role !== 'guru') return;
 
-    const total = dbSiswa.length;
-    const bangun = dbSiswa.filter(s => s.status === "Sudah Bangun").length;
-    const tidur = dbSiswa.filter(s => s.status === "Sudah Tidur").length;
-    const belum = dbSiswa.filter(s => s.status === "Belum Absen" || s.status === "Terlambat").length;
+      const total = dbSiswa.length;
+      const bangun = dbSiswa.filter(s => s.status === "Sudah Bangun").length;
+      const tidur = dbSiswa.filter(s => s.status === "Sudah Tidur").length;
+      const belum = dbSiswa.filter(s => s.status === "Belum Absen" || s.status === "Terlambat").length;
 
-    if (document.getElementById("guruStatTotal")) document.getElementById("guruStatTotal").innerText = total;
-    if (document.getElementById("guruStatBangun")) document.getElementById("guruStatBangun").innerText = bangun;
-    if (document.getElementById("guruStatTidur")) document.getElementById("guruStatTidur").innerText = tidur;
-    if (document.getElementById("guruStatTerlambat")) document.getElementById("guruStatTerlambat").innerText = belum;
+      document.getElementById("guruStatTotal").innerText = total;
+      document.getElementById("guruStatBangun").innerText = bangun;
+      document.getElementById("guruStatTidur").innerText = tidur;
+      document.getElementById("guruStatTerlambat").innerText = belum;
 
-    if (typeof renderGuruTable === "function") renderGuruTable(dbSiswa);
-    if (typeof initGuruChart === "function") initGuruChart(bangun, tidur, belum);
-  }
-</script>
+      const tbody = document.getElementById("guruTableBody");
+      if (dbSiswa.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="p-3 text-center text-gray-400">Belum ada siswa binaan</td></tr>`;
+      } else {
+        tbody.innerHTML = dbSiswa.map(s => `
+          <tr class="border-b">
+            <td class="p-3 font-semibold">${s.nama}</td>
+            <td class="p-3 text-gray-500">${s.kelas}</td>
+            <td class="p-3"><span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-[10px]">${s.status || 'Belum Absen'}</span></td>
+          </tr>
+        `).join("");
+      }
+    }
+  </script>
+</body>
+</html>
