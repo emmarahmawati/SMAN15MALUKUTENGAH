@@ -8,21 +8,49 @@
   let currentUser = null;
   let dbSiswa = [];
 
+  // FUNGSI PENGAMAN (Mencegah Layar Blank jika fungsi UI tidak ada)
+  function safeShowToast(msg) {
+    if (typeof showToast === "function") {
+      showToast(msg);
+    } else {
+      console.log("[TOAST]:", msg);
+      alert(msg); // Fallback jika showToast belum dibuat
+    }
+  }
+
+  function safeSwitchPage(pageId) {
+    if (typeof switchPage === "function") {
+      switchPage(pageId);
+    } else {
+      console.log("[SWITCH PAGE]:", pageId);
+    }
+  }
+
   // ====================================================
-  // 1. PERBAIKAN: LOGIN SISWA (VALDIASI KETAT)
+  // 1. LOGIN SISWA (VALDIASI KETAT)
   // ====================================================
   async function handleLoginSiswa(e) {
-    e.preventDefault();
-    const namaInput = document.getElementById("loginNama").value.trim();
-    const faseInput = document.getElementById("loginFase").value;
-    const kelasInput = document.getElementById("loginKelas").value.trim();
+    if (e) e.preventDefault();
+    
+    const elNama = document.getElementById("loginNama");
+    const elFase = document.getElementById("loginFase");
+    const elKelas = document.getElementById("loginKelas");
 
-    if (!namaInput || !kelasInput) {
-      showToast("⚠️ Mohon isi Nama dan Kelas!");
+    if (!elNama || !elKelas) {
+      safeShowToast("⚠️ Elemen Form Login tidak ditemukan!");
       return;
     }
 
-    showToast("⏳ Memeriksa data di database...");
+    const namaInput = elNama.value.trim();
+    const faseInput = elFase ? elFase.value : "E";
+    const kelasInput = elKelas.value.trim();
+
+    if (!namaInput || !kelasInput) {
+      safeShowToast("⚠️ Mohon isi Nama dan Kelas!");
+      return;
+    }
+
+    safeShowToast("⏳ Memeriksa data di database...");
 
     try {
       const response = await fetch(GAS_API_URL, {
@@ -39,7 +67,6 @@
 
       const res = await response.json();
 
-      // PERBAIKAN 1: Hanya meloloskan jika res.success TRUE & data siswa ditemukan
       if (res.success && res.siswa) {
         currentUser = {
           role: 'siswa',
@@ -52,39 +79,40 @@
           badge: res.siswa.badges || "🥉 Bronze"
         };
 
-        // Update UI Tampilan Siswa
-        document.getElementById("dashNama").innerText = currentUser.nama;
-        document.getElementById("dashMeta").innerText = `Fase ${currentUser.fase} - Kelas ${currentUser.kelas} | Guru Wali: ${currentUser.guruWali}`;
-        document.getElementById("profNama").value = currentUser.nama;
-        document.getElementById("profKelas").value = `Fase ${currentUser.fase} - ${currentUser.kelas}`;
-        document.getElementById("profGuru").value = currentUser.guruWali;
+        // Safe DOM Updates
+        if (document.getElementById("dashNama")) document.getElementById("dashNama").innerText = currentUser.nama;
+        if (document.getElementById("dashMeta")) document.getElementById("dashMeta").innerText = `Fase ${currentUser.fase} - Kelas ${currentUser.kelas} | Guru Wali: ${currentUser.guruWali}`;
+        if (document.getElementById("profNama")) document.getElementById("profNama").value = currentUser.nama;
+        if (document.getElementById("profKelas")) document.getElementById("profKelas").value = `Fase ${currentUser.fase} - ${currentUser.kelas}`;
+        if (document.getElementById("profGuru")) document.getElementById("profGuru").value = currentUser.guruWali;
 
-        switchPage("dashboardSiswaView");
-        document.getElementById("bottomNav").classList.remove("hidden");
-        initSiswaChart();
-        showToast(`Selamat datang, ${currentUser.nama}! 🎉`);
+        safeSwitchPage("dashboardSiswaView");
+        if (document.getElementById("bottomNav")) document.getElementById("bottomNav").classList.remove("hidden");
+        
+        if (typeof initSiswaChart === "function") initSiswaChart();
+        safeShowToast(`Selamat datang, ${currentUser.nama}! 🎉`);
 
       } else {
-        // ❌ JIKA SISWA TIDAK ADA DI DATABASE GOOGLE SHEETS -> BLOKIR LOGIN
-        showToast("❌ Nama/Kelas tidak terdaftar! Hubungi Guru Wali Anda.");
-        return;
+        // ❌ DITOLAK JIKA TIDAK ADA DI DATABASE
+        safeShowToast("❌ Nama/Kelas tidak terdaftar! Hubungi Guru Wali Anda.");
       }
 
     } catch (err) {
       console.error("Login Error:", err);
-      showToast("❌ Gagal terhubung ke database. Cek koneksi internet.");
+      safeShowToast("❌ Gagal terhubung ke database server.");
     }
   }
 
   // ====================================================
-  // 2. LOGIN GURU WALI & SINKRONISASI DATA REAL-TIME
+  // 2. LOGIN GURU WALI & GET DATA REAL-TIME
   // ====================================================
   async function handleLoginGuru(e) {
-    e.preventDefault();
-    const namaGuru = document.getElementById("loginGuruNama").value.trim();
+    if (e) e.preventDefault();
+    const elGuru = document.getElementById("loginGuruNama");
+    const namaGuru = elGuru ? elGuru.value.trim() : "";
 
     if (!namaGuru) {
-      showToast("⚠️ Masukkan nama Guru Wali!");
+      safeShowToast("⚠️ Masukkan nama Guru Wali!");
       return;
     }
 
@@ -93,19 +121,17 @@
       nama: namaGuru
     };
 
-    switchPage("dashboardGuruView");
-    document.getElementById("bottomNav").classList.add("hidden");
+    safeSwitchPage("dashboardGuruView");
+    if (document.getElementById("bottomNav")) document.getElementById("bottomNav").classList.add("hidden");
 
-    // Ambil data siswa terbaru secara otomatis
     await fetchSiswaFromGAS();
-    showToast(`Selamat datang, ${namaGuru}!`);
+    safeShowToast(`Selamat datang, ${namaGuru}!`);
   }
 
-  // FUNGSI MEMANGGIL DAFTAR SISWA DARI GOOGLE SHEETS
   async function fetchSiswaFromGAS() {
     if (!currentUser || currentUser.role !== 'guru') return;
 
-    showToast("🔄 Memuat data siswa terbaru...");
+    safeShowToast("🔄 Memuat data siswa terbaru...");
 
     try {
       const response = await fetch(GAS_API_URL, {
@@ -119,36 +145,38 @@
       const res = await response.json();
 
       if (res.success && Array.isArray(res.data)) {
-        dbSiswa = res.data; // Sinkronkan data lokal dengan data server
-        renderGuruDashboard();
+        dbSiswa = res.data;
       } else {
         dbSiswa = [];
-        renderGuruDashboard();
       }
+      renderGuruDashboard();
     } catch (err) {
       console.error("Fetch Error:", err);
-      showToast("⚠️ Gagal memperbarui data dari server.");
       renderGuruDashboard();
     }
   }
 
   // ====================================================
-  // 3. PERBAIKAN: TAMBAH SISWA (LANGSUNG TAMPIL + SINKRON)
+  // 3. TAMBAH SISWA BARU
   // ====================================================
   async function addSiswaSubmit(e) {
-    e.preventDefault();
-    const nama = document.getElementById("newNama").value.trim();
-    const kelas = document.getElementById("newKelas").value.trim();
-    const fase = document.getElementById("newFase") ? document.getElementById("newFase").value : "E";
+    if (e) e.preventDefault();
+    const elNama = document.getElementById("newNama");
+    const elKelas = document.getElementById("newKelas");
+    const elFase = document.getElementById("newFase");
+
+    const nama = elNama ? elNama.value.trim() : "";
+    const kelas = elKelas ? elKelas.value.trim() : "";
+    const fase = elFase ? elFase.value : "E";
 
     if (!nama || !kelas) {
-      showToast("⚠️ Lengkapi nama dan kelas!");
+      safeShowToast("⚠️ Lengkapi nama dan kelas!");
       return;
     }
 
-    showToast("⏳ Menyimpan siswa baru...");
+    safeShowToast("⏳ Menyimpan siswa baru...");
 
-    // 1. Tampilkan sementara di UI lokal agar responsif
+    // Update lokal sementara
     const tempStudent = {
       id: Date.now(),
       nama: nama,
@@ -165,12 +193,10 @@
     dbSiswa.push(tempStudent);
     renderGuruDashboard();
 
-    // Reset Form & Tutup Modal
-    closeModal("modalAddSiswa");
-    document.getElementById("newNama").value = "";
-    document.getElementById("newKelas").value = "";
+    if (typeof closeModal === "function") closeModal("modalAddSiswa");
+    if (elNama) elNama.value = "";
+    if (elKelas) elKelas.value = "";
 
-    // 2. PERBAIKAN 2: Kirim ke Google Sheets lalu Panggil Ulang Data Segar
     try {
       const response = await fetch(GAS_API_URL, {
         method: "POST",
@@ -188,21 +214,20 @@
       const res = await response.json();
 
       if (res.success) {
-        showToast("✅ Siswa berhasil ditambahkan ke database!");
-        // Refresh data langsung dari Google Sheets agar tersinkron sempurna
+        safeShowToast("✅ Siswa berhasil ditambahkan!");
         await fetchSiswaFromGAS();
       } else {
-        showToast("❌ Gagal menyimpan ke server: " + (res.message || "Error"));
+        safeShowToast("❌ Gagal menyimpan ke server!");
       }
 
     } catch (err) {
       console.error("Add Student Error:", err);
-      showToast("⚠️ Gagal terhubung ke database!");
+      safeShowToast("⚠️ Terjadi kesalahan koneksi!");
     }
   }
 
   // ====================================================
-  // 4. RENDER TAMPILAN DASHBOARD GURU
+  // 4. RENDER DASHBOARD GURU
   // ====================================================
   function renderGuruDashboard() {
     if (!currentUser || currentUser.role !== 'guru') return;
@@ -217,14 +242,7 @@
     if (document.getElementById("guruStatTidur")) document.getElementById("guruStatTidur").innerText = tidur;
     if (document.getElementById("guruStatTerlambat")) document.getElementById("guruStatTerlambat").innerText = belum;
 
-    // Panggil fungsi render tabel jika ada
-    if (typeof renderGuruTable === "function") {
-      renderGuruTable(dbSiswa);
-    }
-    
-    // Panggil fungsi chart jika ada
-    if (typeof initGuruChart === "function") {
-      initGuruChart(bangun, tidur, belum);
-    }
+    if (typeof renderGuruTable === "function") renderGuruTable(dbSiswa);
+    if (typeof initGuruChart === "function") initGuruChart(bangun, tidur, belum);
   }
 </script>
